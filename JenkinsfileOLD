@@ -1,0 +1,28 @@
+pipeline {
+	agent any
+  
+tools { 
+        maven 'Maven3' 
+        jdk 'jdk8' 
+    }
+environment {
+
+  LT_USERNAME = "techwithmoss"
+  MAVEN_CLI_OPTS = " --batch-mode -DsuiteXmlFile=testng.xml"
+  MAVEN_OPTS = "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+}
+stages {
+  stage('build') {
+    steps {
+      withCredentials([string(credentialsId: 'LT_ACCESS_TOKEN', variable: 'LT_ACCESS_TOKEN')]) {
+      sh '''
+        mvn $MAVEN_CLI_OPTS test
+    '''
+
+    }
+
+    }
+  }
+
+}
+}
